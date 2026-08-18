@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { useTeacherStatus } from '@/hooks/useTeacherStatus'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { NAV_BY_ROLE, TEACHER_NAV } from './nav'
 import { Icon } from '@/components/common/Icon'
 import { Logo } from '@/components/common/Logo'
@@ -35,6 +36,7 @@ export function AppShell() {
   const t = useT()
   const [mobileOpen, setMobileOpen] = useState(false)
   const teacher = useTeacherStatus()
+  useScrollLock(mobileOpen)
   if (!user) return null
   const nav =
     user.role === 'teacher'
@@ -49,7 +51,7 @@ export function AppShell() {
   }
 
   const sidebar = (
-    <div className="flex h-full flex-col">
+    <div className="flex min-h-full flex-col">
       <div className="flex items-center justify-between px-5 py-5">
         <Logo />
         <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu">
@@ -94,15 +96,20 @@ export function AppShell() {
   )
 
   return (
-    <div className="flex h-full">
+    // On phones the document itself scrolls (min-h + no nested scroller). A
+    // fixed-height shell with an inner scroll container makes mobile Safari
+    // shove the whole layout viewport up when the keyboard opens, stranding
+    // content off-screen with no way to scroll it back. `lg:` keeps the
+    // desktop app frame (independently scrolling sidebar + content).
+    <div className="flex min-h-[100dvh] lg:h-[100dvh]">
       {/* Desktop sidebar */}
-      <aside className="glass hidden w-64 shrink-0 border-y-0 border-l-0 border-r lg:block">{sidebar}</aside>
+      <aside className="glass hidden w-64 shrink-0 overflow-y-auto overscroll-contain border-y-0 border-l-0 border-r lg:block">{sidebar}</aside>
 
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-brand-950/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="glass absolute left-0 top-0 h-full w-64 shadow-xl">{sidebar}</aside>
+          <aside className="glass absolute left-0 top-0 h-full w-64 max-w-[85vw] overflow-y-auto overscroll-contain shadow-xl">{sidebar}</aside>
         </div>
       )}
 
@@ -128,7 +135,7 @@ export function AppShell() {
             <Avatar src={user.avatarUrl} name={user.name} size={34} className="lg:hidden" />
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">
           <div className="mx-auto max-w-7xl p-4 lg:p-6">
             <AnnouncementBanner />
             <Suspense fallback={<PageLoader />}>

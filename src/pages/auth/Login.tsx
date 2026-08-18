@@ -72,7 +72,7 @@ export function Login() {
   }
 
   return (
-    <div className="grid min-h-full lg:grid-cols-2">
+    <div className="grid min-h-[100dvh] lg:grid-cols-2">
       {/* Brand panel */}
       <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 p-12 text-white lg:flex">
         <Link to="/">

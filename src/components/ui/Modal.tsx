@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { cn } from '@/lib/utils'
 
 export function Modal({
@@ -18,6 +19,8 @@ export function Modal({
   size?: 'sm' | 'md' | 'lg' | 'xl'
   hideClose?: boolean
 }) {
+  useScrollLock(open)
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !hideClose && onClose()
@@ -31,9 +34,9 @@ export function Modal({
   // containing block for fixed positioning (e.g. the header's backdrop-blur),
   // which would otherwise trap and mis-position the modal.
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
       <div className="absolute inset-0 bg-brand-950/40 backdrop-blur-sm" onClick={() => !hideClose && onClose()} />
-      <div role="dialog" aria-modal="true" className={cn('relative z-10 flex max-h-[calc(100dvh-2rem)] w-full flex-col animate-fade-in rounded-2xl bg-white shadow-lift dark:bg-slate-900 dark:ring-1 dark:ring-slate-800', widths[size])}>
+      <div role="dialog" aria-modal="true" className={cn('relative z-10 flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] w-full flex-col animate-fade-in rounded-2xl bg-white shadow-lift dark:bg-slate-900 dark:ring-1 dark:ring-slate-800', widths[size])}>
         {(title || !hideClose) && (
           <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
@@ -44,7 +47,7 @@ export function Modal({
             )}
           </div>
         )}
-        <div className="min-h-0 flex-1 overflow-y-auto p-5">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">{children}</div>
       </div>
     </div>,
     document.body,

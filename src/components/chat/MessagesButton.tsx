@@ -7,12 +7,14 @@ import { useAuth } from '@/lib/auth'
 import { summarizeThreads, type ChatParty, type ThreadSummary } from '@/lib/chat'
 import { Avatar } from '@/components/ui/Avatar'
 import { ChatModal } from './ChatModal'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { cn, timeAgo } from '@/lib/utils'
 
 export function MessagesButton() {
   const { user } = useAuth()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState<ThreadSummary | null>(null)
+  useScrollLock(open)
 
   const all = useLiveQuery(() => db.chat.toArray(), [])
   const threads = user ? summarizeThreads(all ?? [], user.id) : []

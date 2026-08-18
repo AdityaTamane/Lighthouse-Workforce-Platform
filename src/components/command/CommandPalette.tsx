@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth'
 import { useTheme } from '@/lib/theme'
 import { NAV_BY_ROLE } from '@/components/layout/nav'
 import { Icon } from '@/components/common/Icon'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { cn } from '@/lib/utils'
 
 interface CmdItem {
@@ -24,6 +25,7 @@ export function CommandPalette() {
   const navigate = useNavigate()
   const { theme, toggle } = useTheme()
   const [open, setOpen] = useState(false)
+  useScrollLock(open)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -207,7 +209,7 @@ export function CommandPalette() {
   }, {})
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-start justify-center p-4 pt-[12vh]">
+    <div className="fixed inset-0 z-[90] flex items-start justify-center p-3 pt-[8vh] sm:p-4 sm:pt-[12vh]">
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
       <div
         role="dialog"
@@ -223,7 +225,7 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onListKey}
             placeholder="Search pages, people, jobs, or run an action…"
-            className="h-14 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-100"
+            className="h-14 min-w-0 flex-1 bg-transparent text-base text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-100 sm:text-sm"
             aria-label="Command palette search"
           />
           <kbd className="hidden rounded border border-slate-200 px-1.5 py-0.5 text-[10px] text-slate-400 sm:inline dark:border-slate-700">ESC</kbd>

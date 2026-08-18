@@ -41,7 +41,7 @@ const TRUST = [
 export function Landing() {
   const t = useT()
   return (
-    <div className="min-h-full">
+    <div className="min-h-[100dvh]">
       {/* Nav */}
       <header className="glass sticky top-0 z-30 border-x-0 border-t-0">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">

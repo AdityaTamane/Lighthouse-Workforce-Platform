@@ -126,7 +126,7 @@ export function Register() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center p-6">
+    <div className="flex min-h-[100dvh] items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md">
         <div className="mb-6 flex justify-center">
           <Link to="/"><Logo /></Link>

@@ -6,22 +6,60 @@
 @tailwind utilities;
 
 @layer base {
-  html,
+  html {
+    height: 100%;
+    /* Stop iOS rotating-to-landscape from inflating text unpredictably. */
+    -webkit-text-size-adjust: 100%;
+  }
   body,
   #root {
-    height: 100%;
+    /* `min-height` (not `height`) so the document itself can scroll on phones —
+       see the AppShell comment about nested scroll containers. */
+    min-height: 100%;
+  }
+  /* Never let one over-wide child turn into a sideways pan of the whole app.
+     Kept as two rules (not a same-block fallback) because a minifier would drop
+     the overridden declaration and take the old-Safari fallback with it. */
+  html {
+    overflow-x: hidden;
+  }
+  /* `clip` is preferred wherever it exists: unlike `hidden` it does not make
+     these elements scroll containers, so every `position: sticky` header below
+     them keeps working — which is why `body` only ever gets `clip`. */
+  @supports (overflow: clip) {
+    html,
+    body {
+      overflow-x: clip;
+    }
   }
   body {
     @apply bg-slate-50 text-slate-800 antialiased transition-colors duration-200;
     font-family: 'Inter', system-ui, sans-serif;
+    /* Long unbroken strings (emails, ids, urls) wrap instead of widening their
+       container — the usual cause of a stray horizontal scrollbar on mobile. */
+    overflow-wrap: break-word;
+    -webkit-tap-highlight-color: transparent;
     background-image: radial-gradient(70% 55% at 15% -5%, rgba(79, 131, 200, 0.1) 0%, rgba(79, 131, 200, 0) 55%),
       radial-gradient(55% 45% at 100% 0%, rgba(247, 168, 37, 0.08) 0%, rgba(247, 168, 37, 0) 55%);
-    background-attachment: fixed;
+    /* A `fixed` background repaints the full viewport on every scroll frame in
+       mobile Safari, which reads as stutter. Only pin it on large screens. */
+    background-attachment: scroll;
   }
   .dark body {
     @apply bg-slate-950 text-slate-200;
     background-image: radial-gradient(70% 55% at 15% -5%, rgba(47, 99, 173, 0.22) 0%, rgba(47, 99, 173, 0) 55%),
       radial-gradient(55% 45% at 100% 0%, rgba(241, 143, 12, 0.12) 0%, rgba(241, 143, 12, 0) 55%);
+  }
+  @media (min-width: 1024px) {
+    body {
+      background-attachment: fixed;
+    }
+  }
+  /* Freeze the page behind a modal / drawer so it can't scroll away underneath
+     and land somewhere else when the overlay closes. Toggled by useScrollLock. */
+  html.overlay-open,
+  html.overlay-open body {
+    overflow: hidden;
   }
   /* Consistent visible focus ring for keyboard users across the app. */
   :focus-visible {
@@ -60,9 +98,12 @@
   .skeleton::after {
     @apply absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent content-[''] dark:via-white/5;
   }
+  /* `text-base` below `sm` is deliberate: mobile Safari zooms the whole page in
+     when a focused control's text is under 16px, and never zooms back out —
+     that is what makes the layout "slide" off-screen mid-form. */
   .input {
-    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition
-           placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-800 outline-none transition
+           placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 sm:text-sm;
   }
   .dark .input {
     @apply border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500
@@ -98,6 +139,17 @@
   }
   .no-print {
     display: none !important;
+  }
+}
+
+/* Backstop for the iOS focus-zoom rule above: catches any control that styles
+   itself without the `.input` class. Sits outside @layer so it beats utilities.
+   Controls that already ask for >=16px (text-base/lg/xl/2xl) are left alone. */
+@media (max-width: 639px) {
+  input:not([class*='text-base']):not([class*='text-lg']):not([class*='text-xl']):not([class*='text-2xl']):not([class*='text-3xl']),
+  select:not([class*='text-base']):not([class*='text-lg']):not([class*='text-xl']):not([class*='text-2xl']),
+  textarea:not([class*='text-base']):not([class*='text-lg']):not([class*='text-xl']):not([class*='text-2xl']) {
+    font-size: 16px;
   }
 }
 

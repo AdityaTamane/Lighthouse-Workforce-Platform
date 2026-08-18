@@ -166,7 +166,7 @@ function DocRow({ doc, admin }: { doc: DocumentRecord; admin: { id: string; name
       {showReject && (
         <div className="mt-2 flex gap-2">
           <input
-            className="input h-9 text-sm"
+            className="input h-9 text-base sm:text-sm"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Reason (e.g. blurry scan)…"

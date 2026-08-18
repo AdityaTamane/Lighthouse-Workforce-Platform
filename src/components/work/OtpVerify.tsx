@@ -50,7 +50,7 @@ export function OtpVerify({ expected, onVerified }: { expected: string; onVerifi
         Ask the customer for the 6-digit code shown on their tracking screen, then enter it below.
       </p>
 
-      <div className="mt-5 flex gap-2" onPaste={onPaste}>
+      <div className="mt-5 flex gap-1.5 sm:gap-2" onPaste={onPaste}>
         {digits.map((d, i) => (
           <input
             key={i}
@@ -60,7 +60,7 @@ export function OtpVerify({ expected, onVerified }: { expected: string; onVerifi
             maxLength={1}
             onChange={(e) => setDigit(i, e.target.value)}
             onKeyDown={(e) => onKey(i, e)}
-            className={`h-12 w-11 rounded-xl border text-center text-xl font-bold outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 ${
+            className={`h-12 min-w-0 flex-1 rounded-xl border text-center text-xl font-bold sm:w-11 sm:flex-none outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 ${
               error ? 'border-red-400 bg-red-50' : 'border-slate-300 dark:border-slate-700'
             }`}
           />

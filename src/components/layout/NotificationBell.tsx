@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth'
 import { useT } from '@/lib/i18n'
 import { pushSupported, pushPermission, requestPush, soundEnabled, setSoundEnabled, playChime } from '@/lib/push'
 import { toast } from '@/components/ui/toast'
+import { useScrollLock } from '@/hooks/useScrollLock'
 import { cn, timeAgo } from '@/lib/utils'
 import type { Notification } from '@/lib/types'
 
@@ -18,6 +19,7 @@ export function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [perm, setPerm] = useState(pushPermission())
   const [sound, setSound] = useState(soundEnabled())
+  useScrollLock(open)
 
   const enablePush = async () => {
     const result = await requestPush()

@@ -101,7 +101,7 @@ export function ChatModal({
         </button>
       </span>
     } size="md">
-      <div className="flex h-[60vh] flex-col">
+      <div className="flex h-[60dvh] flex-col">
         {jobTitle && (
           <p className="mb-2 rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">
             Re: {jobTitle}
