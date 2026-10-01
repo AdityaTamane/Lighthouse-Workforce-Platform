@@ -1,3 +1,5 @@
+Unified workforce ecosystem connecting graduates, customers, educators and employees through verified service opportunities, recruitment, workforce operations and HR management.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
